@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta cha$et="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar Task Manager</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        h1 {
+            margin: 20px 0;
+            color: #333;
+        }
+        #calendar-container {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+        #calendar, #company-selector, #medicine-selector {
+            margin: 10px 0;
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        #notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Pharmacy Management System</h1>
+    <div id="calendar-container">
+        <input type="date" id="calendar">
+        <select id="company-selector">
+            <option value="" disabled selected>Select a company</option>
+            <option value="Cipla">Cipla</option>
+            <option value="Sun Pharma">Sun Pharma</option>
+            <option value="Ranbaxy">Ranbaxy</option>
+            <option value="Dr. Reddy's">Dr. Reddy's</option>
+            <option value="Glenmark">Glenmark</option>
+            <option value="Biocon">Biocon</option>
+            <option value="Pfizer">Pfizer</option>
+            <option value="Novartis">Novartis</option>
+            <option value="Aurobindo">Aurobindo</option>
+            <option value="Sanofi">Sanofi</option>
+        </select>
+        <select id="medicine-selector">
+            <option value="" disabled selected>Select a medicine</option>
+            <option value="Paracetamol">Paracetamol</option>
+            <option value="Ibuprofen">Ibuprofen</option>
+            <option value="Amoxicillin">Amoxicillin</option>
+            <option value="Metformin">Metformin</option>
+            <option value="Azithromycin">Azithromycin</option>
+            <option value="Omeprazole">Omeprazole</option>
+            <option value="Cefuroxime">Cefuroxime</option>
+            <option value="Losartan">Losartan</option>
+        </select>
+    </div>
+    <div id="notification">Notification</div>
+
+    <script>
+        document.getElementById('calendar').addEventListener('change', handleOrder);
+        document.getElementById('company-selector').addEventListener('change', handleOrder);
+        document.getElementById('medicine-selector').addEventListener('change', handleOrder);
+
+        function handleOrder() {
+            const selectedDate = document.getElementById('calendar').value;
+            const selectedCompany = document.getElementById('company-selector').value;
+            const selectedMedicine = document.getElementById('medicine-selector').value;
+
+            if (!selectedDate || !selectedCompany || !selectedMedicine) {
+                return;
+            }
+
+            const formattedDate = new Date(selectedDate).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+            });
+
+            showNotification(`Order from ${selectedCompany} for ${selectedMedicine} scheduled on ${formattedDate}`);
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.display = 'block';
+
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

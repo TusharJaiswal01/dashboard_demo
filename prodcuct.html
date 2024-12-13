@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta cha$et="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicinal Products</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        header {
+            background-color: #28a745;
+            color: white;
+            text-align: center;
+            padding: 15px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .search-bar {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .search-bar input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .search-bar button {
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cu$or: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .category {
+            margin-bottom: 30px;
+        }
+        .category h2 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .product-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .product {
+            background: #fff;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+        .product:hover {
+            transform: scale(1.02);
+        }
+        .product h3 {
+            margin: 0 0 10px;
+            color: #28a745;
+        }
+        .product p {
+            margin: 5px 0;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Medicinal Products</h1>
+    </header>
+    <div class="container">
+        <div class="search-bar">
+            <input type="text" id="search" placeholder="Search for a product or category">
+            <button onclick="searchProduct()">Search</button>
+        </div>
+        <div id="productCategories"></div>
+    </div>
+
+    <script>
+        const categories = [
+            "Antibiotics", "Pain Relieve$", "Antiseptics", "Cough Syrups", "Vitamins", 
+            "Diabetes Medications", "Heart Medications", "Allergy Medications", "Antacids", "Skin Creams",
+            "Eye Drops", "Sleep Aids", "Digestive Aids", "Asthma Inhale$", "Hormone Therapies",
+            "Anti-depressants", "Anti-viral Drugs", "Vaccines", "Blood Thinne$", "Nasal Sprays"
+        ];
+
+        const products = categories.flatMap((category, index) => 
+            Array.from({ length: 5 }, (_, i) => ({
+                id: index * 5 + i + 1,
+                name: `${category} Product ${i + 1}`,
+                category,
+                description: `This is a description for ${category} Product ${i + 1}.`,
+                price: (Math.random() * 100 + 50).toFixed(2) + ' INR'
+            }))
+        );
+
+        function renderProducts(filter = '') {
+            const productCategories = document.getElementById('productCategories');
+            productCategories.innerHTML = '';
+
+            const filteredProducts = filter
+                ? products.filter(product => 
+                    product.name.toLowerCase().includes(filter.toLowerCase()) ||
+                    product.category.toLowerCase().includes(filter.toLowerCase())
+                )
+                : products;
+
+            const grouped = filteredProducts.reduce((acc, product) => {
+                acc[product.category] = acc[product.category] || [];
+                acc[product.category].push(product);
+                return acc;
+            }, {});
+
+            for (const [category, items] of Object.entries(grouped)) {
+                const categoryHTML = document.createElement('div');
+                categoryHTML.className = 'category';
+
+                categoryHTML.innerHTML = `
+                    <h2>${category}</h2>
+                    <div class="product-list">
+                        ${items.map(product => `
+                            <div class="product">
+                                <h3>${product.name}</h3>
+                                <p>${product.description}</p>
+                                <p><strong>Price:</strong> ${product.price}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+
+                productCategories.appendChild(categoryHTML);
+            }
+        }
+
+        function searchProduct() {
+            const searchInput = document.getElementById('search').value;
+            renderProducts(searchInput);
+        }
+
+        renderProducts();
+    </script>
+</body>
+</html>

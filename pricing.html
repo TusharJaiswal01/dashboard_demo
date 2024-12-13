@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta cha$et="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharmacy Pricing Table</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table th, table td {
+            padding: 12px 15px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        table th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        table tr:hover {
+            background-color: #e9f5e9;
+        }
+        .restock-alert {
+            color: red;
+            font-weight: bold;
+        }
+        .btn {
+            padding: 8px 15px;
+            color: white;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 5px;
+            cu$or: pointer;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 5px;
+            width: 300px;
+            text-align: center;
+        }
+        .modal .btn {
+            background-color: #007bff;
+        }
+        .modal .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Pharmacy Pricing Table</h1>
+    </header>
+    <div class="container">
+        <h1>Medicinal Products</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Product Name</th>
+                    <th>Stock Available</th>
+                    <th>Price per Unit</th>
+                    <th>Total Expenditure</th>
+                    <th>Restock Needed</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="pricingTable">
+                <!-- Rows will be populated dynamically -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal for order confirmation -->
+    <div id="orderModal" class="modal">
+        <div class="modal-content">
+            <h2>Confirm Order</h2>
+            <p id="orderProductName"></p>
+            <button class="btn" id="confirmOrderBtn">Confirm Order</button>
+            <button class="btn" id="closeModalBtn">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        const categories = [
+            "Cough Syrup", "Pain Reliever", "Antibiotics", "Antacids", "Vitamins",
+            "Diabetes", "Hypertension", "Allergy", "Cold & Flu", "Antidepressants",
+            "Skin Care", "Eye Drops", "Anti-inflammatory", "Antiviral", "Anti-fungal",
+            "Cardiovascular", "Gastrointestinal", "Respiratory", "Hormones", "Neurology",
+            "Orthopedics", "Dental Care", "Pediatrics", "Oncology", "Immunology"
+        ];
+
+        const products = categories.flatMap(category => {
+            return Array.from({ length: 5 }, (_, index) => ({
+                category,
+                name: `${category} Product ${index + 1}`,
+                stock: Math.floor(Math.random() * 100),
+                pricePerUnit: (Math.random() * 500 + 50).toFixed(2),
+            }));
+        });
+
+        function populateTable() {
+            const tableBody = document.getElementById('pricingTable');
+            tableBody.innerHTML = '';
+
+            products.forEach(product => {
+                const totalExpenditure = (product.stock * product.pricePerUnit).toFixed(2);
+                const restockNeeded = product.stock < 20 ? 'Yes' : 'No';
+
+                const row = `
+                    <tr>
+                        <td>${product.category}</td>
+                        <td>${product.name}</td>
+                        <td>${product.stock}</td>
+                        <td>₹${product.pricePerUnit}</td>
+                        <td>₹${totalExpenditure}</td>
+                        <td class="${restockNeeded === 'Yes' ? 'restock-alert' : ''}">${restockNeeded}</td>
+                        <td><button class="btn" onclick="openModal('${product.name}')">Order Now</button></td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
+            });
+        }
+
+        function openModal(productName) {
+            document.getElementById('orderProductName').textContent = `You are about to order: ${productName}`;
+            document.getElementById('orderModal').style.display = "block";
+        }
+
+        document.getElementById('closeModalBtn').addEventListener('click', function() {
+            document.getElementById('orderModal').style.display = "none";
+        });
+
+        document.getElementById('confirmOrderBtn').addEventListener('click', function() {
+            alert("Order has been confirmed!");
+            document.getElementById('orderModal').style.display = "none";
+        });
+
+        populateTable();
+    </script>
+</body>
+</html>

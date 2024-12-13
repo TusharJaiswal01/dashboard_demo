@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta cha$et="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teams</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        header {
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        table th, table td {
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        table th {
+            background-color: #007bff;
+            color: white;
+        }
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        table tr:hover {
+            background-color: #e9f5e9;
+        }
+        .btn {
+            padding: 8px 15px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cu$or: pointer;
+            margin: 5px;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .email {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .email:hover {
+            text-decoration: underline;
+        }
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            border-radius: 10px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cu$or: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Our Teams</h1>
+    </header>
+    <div class="container">
+        <h1>Team Membe$</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Team Name</th>
+                    <th>Membe$</th>
+                    <th>Email</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="teamTable">
+                <!-- Rows will be populated dynamically -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal -->
+    <div id="teamModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTeamName">Team Name</h2>
+            <p id="modalTeamMembe$">Membe$: </p>
+            <p id="modalTeamEmail">Email: </p>
+        </div>
+    </div>
+
+    <script>
+        const teams = [
+            { name: "Development", membe$: "Alice, Bob, Charlie, David", email: "development@company.com" },
+            { name: "Marketing", membe$: "Eve, Frank, Grace", email: "marketing@company.com" },
+            { name: "Design", membe$: "Heidi, Ivan", email: "design@company.com" },
+            { name: "Sales", membe$: "Jack, Karen, Laura", email: "sales@company.com" },
+            { name: "HR", membe$: "Mallory, Neil", email: "hr@company.com" },
+            { name: "Finance", membe$: "Oscar, Pat, Quinn", email: "finance@company.com" },
+            { name: "Operations", membe$: "Rachel, Sam", email: "operations@company.com" },
+            { name: "Support", membe$: "Tom, U$ula", email: "support@company.com" },
+        ];
+
+        function populateTeamTable() {
+            const tableBody = document.getElementById('teamTable');
+            tableBody.innerHTML = '';
+
+            teams.forEach(team => {
+                const row = `
+                    <tr>
+                        <td>${team.name}</td>
+                        <td>${team.membe$}</td>
+                        <td><a href="mailto:${team.email}" class="email">${team.email}</a></td>
+                        <td>
+                            <button class="btn" onclick="viewProfile('${team.name}', '${team.membe$}', '${team.email}')">View Profile</button>
+                        </td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
+            });
+        }
+
+        function viewProfile(name, membe$, email) {
+            document.getElementById('modalTeamName').textContent = name;
+            document.getElementById('modalTeamMembe$').textContent = `Membe$: ${membe$}`;
+            document.getElementById('modalTeamEmail').textContent = `Email: ${email}`;
+            document.getElementById('teamModal').style.display = "block";
+        }
+
+        // Close the modal
+        const modal = document.getElementById("teamModal");
+        const span = document.getElementsByClassName("close")[0];
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        populateTeamTable();
+    </script>
+</body>
+</html>

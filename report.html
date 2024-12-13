@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta cha$et="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharmacy Product List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        header {
+            background-color: #6200ea;
+            color: white;
+            text-align: center;
+            padding: 15px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .search-bar {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .search-bar input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .search-bar button {
+            padding: 10px 15px;
+            background-color: #6200ea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cu$or: pointer;
+        }
+        button:hover {
+            background-color: #4b00b7;
+        }
+        .product-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .product {
+            background: #fff;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+        .product:hover {
+            transform: scale(1.02);
+        }
+        .product h3 {
+            margin: 0 0 10px;
+            color: #6200ea;
+        }
+        .product p {
+            margin: 5px 0;
+            color: #555;
+        }
+        .expiry-alert {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Pharmacy Product List</h1>
+    </header>
+    <div class="container">
+        <div class="search-bar">
+            <input type="text" id="search" placeholder="Search for a product by name or category">
+            <button onclick="searchProduct()">Search</button>
+        </div>
+        <div class="product-list" id="productList"></div>
+    </div>
+
+    <script>
+        const productNames = [
+            "Paracetamol", "Ibuprofen", "Amoxicillin", "Ciprofloxacin", "Metformin",
+            "Amlodipine", "Atorvastatin", "Omeprazole", "Losartan", "Clopidogrel",
+            "Azithromycin", "Doxycycline", "Cetirizine", "Salbutamol", "Ranitidine",
+            "Furosemide", "Hydrochlorothiazide", "Simvastatin", "Levothyroxine", "Prednisone",
+            "Gabapentin", "Tramadol", "Alprazolam", "Metoprolol", "Carvedilol",
+            "Sertraline", "Fluoxetine", "Warfarin", "Rosuvastatin", "Pantoprazole",
+            "Lisinopril", "Enalapril", "Bisoprolol", "Digoxin", "Aspirin",
+            "Vitamin C", "Vitamin D", "Calcium Carbonate", "Zinc Sulphate", "Iron Supplements",
+            "Insulin", "Glimepiride", "Glyburide", "Pioglitazone", "Esomeprazole",
+            "Telmisartan", "Vildagliptin", "Sitagliptin", "Erythromycin", "Levofloxacin"
+        ];
+
+        const products = productNames.map((name, index) => ({
+            id: index + 1,
+            name,
+            category: ['Tablet', 'Syrup', 'Capsule'][Math.floor(Math.random() * 3)],
+            stock: Math.floor(Math.random() * 200),
+            expiryDate: new Date(Date.now() + Math.random() * 1e10).toISOString().split('T')[0]
+        }));
+
+        function renderProducts(filter = '') {
+            const productList = document.getElementById('productList');
+            productList.innerHTML = '';
+            products
+                .filter(product =>
+                    product.name.toLowerCase().includes(filter.toLowerCase()) ||
+                    product.category.toLowerCase().includes(filter.toLowerCase())
+                )
+                .forEach(product => {
+                    const isExpired = new Date(product.expiryDate) < new Date();
+                    const productHTML = `
+                        <div class="product">
+                            <h3>${product.name}</h3>
+                            <p>Category: ${product.category}</p>
+                            <p>Stock: ${product.stock}</p>
+                            <p>Expiry Date: <span class="${isExpired ? 'expiry-alert' : ''}">${product.expiryDate}</span></p>
+                        </div>`;
+                    productList.innerHTML += productHTML;
+                });
+        }
+
+        function searchProduct() {
+            const searchInput = document.getElementById('search').value;
+            renderProducts(searchInput);
+        }
+
+        renderProducts();
+    </script>
+</body>
+</html>
