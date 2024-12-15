@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta cha$et="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pharmacy Management System</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.21/jspdf.plugin.autotable.min.js"></script> <!-- Added autoTable plugin -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -40,7 +42,7 @@
         button {
             background-color: #28a745;
             color: white;
-            cu$or: pointer;
+            cursor: pointer;
         }
         button:hover {
             background-color: #218838;
@@ -119,8 +121,8 @@
         function addTransaction() {
             const company = document.getElementById('company').value;
             const medicine = document.getElementById('medicine').value;
-            const quantity = pa$eInt(document.getElementById('quantity').value);
-            const price = pa$eFloat(document.getElementById('price').value);
+            const quantity = parseInt(document.getElementById('quantity').value);
+            const price = parseFloat(document.getElementById('price').value);
             const date = new Date().toLocaleString();
 
             if (!medicine || quantity <= 0 || price <= 0) {
@@ -137,7 +139,7 @@
             const table = document.getElementById('transactionTable');
             table.innerHTML = '';
 
-            transactions.forEach((transaction, index) => {
+            transactions.forEach(transaction => {
                 const row = `<tr>
                     <td>${transaction.date}</td>
                     <td>${transaction.company}</td>
@@ -156,18 +158,21 @@
                 return;
             }
 
-            let reportContent = 'Date,Company,Medicine,Quantity,Price,Total\n';
-            transactions.forEach(transaction => {
-                reportContent += `${transaction.date},${transaction.company},${transaction.medicine},${transaction.quantity},${transaction.price},${transaction.total}\n`;
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            doc.text("Pharmacy Management System - Report", 10, 10);
+
+            let startY = 20;
+            doc.autoTable({
+                head: [['Date', 'Company', 'Medicine', 'Quantity', 'Price', 'Total']],
+                body: transactions.map(t => [
+                    t.date, t.company, t.medicine, t.quantity, t.price.toFixed(2), t.total.toFixed(2)
+                ]),
+                startY: startY
             });
 
-            const blob = new Blob([reportContent], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'pharmacy_report.csv';
-            a.click();
-            URL.revokeObjectURL(url);
+            doc.save('pharmacy_report.pdf');
         }
     </script>
 </body>

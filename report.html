@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta cha$et="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pharmacy Product List</title>
     <style>
@@ -46,7 +46,7 @@
             color: white;
             border: none;
             border-radius: 5px;
-            cu$or: pointer;
+            cursor: pointer;
         }
         button:hover {
             background-color: #4b00b7;
@@ -79,6 +79,18 @@
             color: red;
             font-weight: bold;
         }
+        .download-btn {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .download-btn:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
@@ -93,13 +105,16 @@
         <div class="product-list" id="productList"></div>
     </div>
 
+    <!-- Include jsPDF library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
     <script>
         const productNames = [
             "Paracetamol", "Ibuprofen", "Amoxicillin", "Ciprofloxacin", "Metformin",
             "Amlodipine", "Atorvastatin", "Omeprazole", "Losartan", "Clopidogrel",
             "Azithromycin", "Doxycycline", "Cetirizine", "Salbutamol", "Ranitidine",
             "Furosemide", "Hydrochlorothiazide", "Simvastatin", "Levothyroxine", "Prednisone",
-            "Gabapentin", "Tramadol", "Alprazolam", "Metoprolol", "Carvedilol",
+            "Gabapentin", "Tramadol", "Alprazam", "Metoprolol", "Carvedilol",
             "Sertraline", "Fluoxetine", "Warfarin", "Rosuvastatin", "Pantoprazole",
             "Lisinopril", "Enalapril", "Bisoprolol", "Digoxin", "Aspirin",
             "Vitamin C", "Vitamin D", "Calcium Carbonate", "Zinc Sulphate", "Iron Supplements",
@@ -126,11 +141,12 @@
                 .forEach(product => {
                     const isExpired = new Date(product.expiryDate) < new Date();
                     const productHTML = `
-                        <div class="product">
+                        <div class="product" id="product-${product.id}">
                             <h3>${product.name}</h3>
                             <p>Category: ${product.category}</p>
                             <p>Stock: ${product.stock}</p>
                             <p>Expiry Date: <span class="${isExpired ? 'expiry-alert' : ''}">${product.expiryDate}</span></p>
+                            <button class="download-btn" onclick="downloadReport(${product.id})">Download Report</button>
                         </div>`;
                     productList.innerHTML += productHTML;
                 });
@@ -139,6 +155,34 @@
         function searchProduct() {
             const searchInput = document.getElementById('search').value;
             renderProducts(searchInput);
+        }
+
+        function downloadReport(productId) {
+            const product = products.find(p => p.id === productId);
+
+            if (!product) return;
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.setFontSize(16);
+            doc.setTextColor(98, 0, 234); // Purple color for title
+            doc.text(`Product Report: ${product.name}`, 20, 20);
+
+            doc.setFontSize(12);
+            doc.setTextColor(0, 0, 0); // Black color for details
+            doc.text(`Category: ${product.category}`, 20, 30);
+            doc.text(`Stock: ${product.stock}`, 20, 40);
+            doc.text(`Expiry Date: ${product.expiryDate}`, 20, 50);
+
+            const isExpired = new Date(product.expiryDate) < new Date();
+            if (isExpired) {
+                doc.setTextColor(255, 0, 0); // Red color for expired products
+                doc.text('Warning: This product has expired!', 20, 60);
+            }
+
+            // Save PDF
+            doc.save(`${product.name}_Report.pdf`);
         }
 
         renderProducts();
